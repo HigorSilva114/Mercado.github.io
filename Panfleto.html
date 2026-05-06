@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mercado do Zé</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: linear-gradient(to right, #45dfd7, #24499e);
+            color: #000;
+        }
+
+        header {
+            text-align: center;
+            position: relative;
+            padding-top: 30px;
+        }
+
+        #logo {
+            position: absolute;
+            left: 200px;
+            top: 20px;
+            width: 250px;
+        }
+
+        h1 {
+            font-size: 65px;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .ofertas-titulo {
+            color: #e74c3c;
+            font-size: 45px;
+            margin: -5px 0 20px 300px;
+            font-weight: bold;
+        }
+
+        .categorias {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 50px;
+        }
+
+        .categorias a {
+            margin: 0 10px;
+            text-decoration: underline;
+            color: black;
+            cursor: pointer;
+        }
+
+        .categorias a:hover {
+            color: #ffd700;
+        }
+
+        .vitrine {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+
+
+        .produto-card {
+            height: auto;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            justify-content: flex-start;
+        }
+
+        .produto-card img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .produto-card h3 {
+            font-size: 15px;
+            text-align: center;
+            margin: 0 0 10px 0;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preco-tag {
+            background-color: #ffd700;
+            color: black;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 25px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .preco-tag:hover {
+            transform: scale(1.1);
+        }
+
+        .preco-tag span {
+            font-size: 14px;
+        }
+
+        #area-carrinho {
+            background-color: #111;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+
+        /* Estilo do Botão Remover */
+        .btn-remover {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        /* Estilização para Labels e Selects */
+        label {
+            display: block;
+            font-size: 11px;
+            color: #fff;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 2px solid #ffd700;
+            background-color: #f9f9f9;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+            border-color: #24499e;
+        }
+
+        #area-entrega {
+            background: rgba(255, 255, 255, 0.9);
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .busca-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #cep {
+            padding: 10px;
+            border: 2px solid #24499e;
+            border-radius: 5px;
+            width: 150px;
+        }
+
+        #buscar_cep {
+            background-color: #24499e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #buscar_cep:hover {
+            background-color: #ffd700;
+            color: #000;
+        }
+
+        #resultado {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="Logo.png" id="logo" alt="Logo Mercado do Zé">
+        <h1>Mercado do Zé</h1>
+        <div class="ofertas-titulo">OFERTAS DO MÊS</div>
+
+        <div class="categorias">
+            <a href="#" onclick="mercado.filtrarCategoria('todos'); return false;">Todos</a> |
+            <a href="#" onclick="mercado.filtrarCategoria('limpeza'); return false;">Limpeza</a> |
+            <a href="#" onclick="mercado.filtrarCategoria('carnes'); return false;">Carnes</a> |
+            <a href="#" onclick="mercado.filtrarCategoria('mercearia'); return false;">Mercearia</a> |
+            <a href="B22.html">Itens Da B22</a>
+        </div>
+    </header>
+
+    <main class="vitrine">
+        <div class="produto-card" data-categoria="limpeza">
+            <img src="Veja.png" alt="Veja">
+            <h3>Desengordurante Veja</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Desengordurante Veja', 5.99)">5,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Trigo.png" alt="Farinha">
+            <h3>Farinha de trigo Vilma</h3>
+            <button class="preco-tag"
+                onclick="mercado.adicionarAoCarrinho('Farinha de trigo Vilma', 2.99)">2,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="limpeza">
+            <img src="Sanol.png" alt="Sanol">
+            <h3>Desinfetante Sanol</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Desinfetante Sanol', 7.99)">7,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="carnes">
+            <img src="Cupim.png" alt="Cupim">
+            <h3>Corte Cupim</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Corte Cupim', 39.90 , 'select-cupim')">39,90
+                <span>KG</span></button>
+            <label for="Kilos">Escolha Uma Quantidade Kg/Gramas:</label>
+            <select name="Kilos" id="select-cupim">
+                <option value="0.5">0,500G Mínimo</option>
+                <option value="1">1kg</option>
+                <option value="1.5">1,5kg</option>
+                <option value="2">2,0kg</option>
+                <option value="2.5">2,5kg</option>
+                <option value="3">3kg</option>
+                <option value="3.5">3,5kg</option>
+                <option value="4">4kg</option>
+                <option value="4.5">4,5kg</option>
+                <option value="5">5kg Máximo</option>
+            </select>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Sal.png" alt="Sal">
+            <h3>Sal Globo</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Sal Globo', 1.99)">1,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Feijão.png" alt="Feijão">
+            <h3>Feijão COOP</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Feijão COOP', 7.99)">7,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="limpeza">
+            <img src="Papel_higienico.png" alt="Papel">
+            <h3>Papel higiênico</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Papel higiênico', 12.99)">12,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="carnes">
+            <img src="Picanha.png" alt="Picanha">
+            <h3>Corte Picanha</h3>
+            <button class="preco-tag"
+                onclick="mercado.adicionarAoCarrinho('Corte Picanha', 45.99 , 'select-picanha')">45,99
+                <span>KG</span></button>
+            <label for="Kilos">Escolha Uma Quantidade Kg/Gramas:</label>
+            <select name="Kilos" id="select-picanha">
+                <option value="0.5">0,500G Mínimo</option>
+                <option value="1">1kg</option>
+                <option value="1.5">1,5kg</option>
+                <option value="2">2,0kg</option>
+                <option value="2.5">2,5kg</option>
+                <option value="3">3kg</option>
+                <option value="3.5">3,5kg</option>
+                <option value="4">4kg</option>
+                <option value="4.5">4,5kg</option>
+                <option value="5">5kg Máximo</option>
+            </select>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="nescau.png" alt="Nescau">
+            <h3>Chocolate em pó Nescau</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Chocolate Nescau', 4.99)">4,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="carnes">
+            <img src="Linguiça.png" alt="Linguiça">
+            <h3>Linguiça Toscana</h3>
+            <button class="preco-tag"
+                onclick="mercado.adicionarAoCarrinho('Linguiça toscana', 24.99 , 'select-linguica')">24,99</button>
+            <label for="Kilos">Escolha Uma Quantidade Kg/Gramas:</label>
+            <select name="Kilos" id="select-linguica">
+                <option value="0.5">0,500G Mínimo</option>
+                <option value="1">1kg</option>
+                <option value="1.5">1,5kg</option>
+                <option value="2">2,0kg</option>
+                <option value="2.5">2,5kg</option>
+                <option value="3">3kg</option>
+                <option value="3.5">3,5kg</option>
+                <option value="4">4kg</option>
+                <option value="4.5">4,5kg</option>
+                <option value="5">5kg Máximo</option>
+            </select>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Arroz.png" alt="Arroz">
+            <h3>Arroz Caçarola</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Arroz Caçarola', 7.99)">7,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Cerveja.png" alt="Cerveja">
+            <h3>Cerveja PAULANER</h3>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Cerveja PAULANER', 3.99)">3,99</button>
+        </div>
+    </main>
+    <section id="area-entrega">
+        <h3>Consulte a Entrega</h3>
+        <div class="busca-container">
+            <input type="text" id="cep" placeholder="00000-000" maxlength="9">
+            <button id="buscar_cep">Calcular Frete</button>
+        </div>
+        <div id="resultado"></div>
+    </section>
+
+    <section id="area-carrinho">
+        <h2>Seu Carrinho de Compras</h2>
+        <ul id="lista-carrinho" style="list-style: none; padding: 0; margin-bottom: 20px;">
+            <li style="color: #aaa;">O carrinho está vazio. Clique em um preço para comprar!</li>
+        </ul>
+        <h3>Total: R$ <span id="total-carrinho">0,00</span></h3>
+    </section>
+
+    <script>
+        class SistemaMercado {
+            constructor() {
+                this.carrinho = [];
+                this.listaHTML = document.getElementById('lista-carrinho');
+                this.totalHTML = document.getElementById('total-carrinho');
+            }
+
+            filtrarCategoria(categoriaSelecionada) {
+                const produtos = document.querySelectorAll('.produto-card');
+                produtos.forEach(produto => {
+                    const categoriaDoProduto = produto.getAttribute('data-categoria');
+                    produto.style.display = (categoriaSelecionada === 'todos' || categoriaSelecionada === categoriaDoProduto) ? 'flex' : 'none';
+                });
+            }
+
+            adicionarAoCarrinho(nome, precoBase, idSelect = null) {
+                let quantidadeOuPeso = 1;
+                let nomeExibicao = nome;
+
+                if (idSelect) {
+                    const select = document.getElementById(idSelect);
+                    quantidadeOuPeso = parseFloat(select.value);
+                    nomeExibicao = `${nome} (${quantidadeOuPeso}kg)`;
+                }
+
+                const itemExistente = this.carrinho.find(item => item.nome === nomeExibicao);
+
+                if (itemExistente && !idSelect) {
+                    itemExistente.quantidade += 1;
+                } else {
+                    this.carrinho.push({
+                        nome: nomeExibicao,
+                        preco: precoBase * quantidadeOuPeso,
+                        quantidade: 1
+                    });
+                }
+
+                this.atualizarVisual();
+            }
+
+            removerDoCarrinho(nome) {
+                const index = this.carrinho.findIndex(item => item.nome === nome);
+                if (index !== -1) {
+                    if (this.carrinho[index].quantidade > 1) {
+                        this.carrinho[index].quantidade -= 1;
+                    } else {
+                        this.carrinho.splice(index, 1);
+                    }
+                }
+                this.atualizarVisual();
+            }
+
+            atualizarVisual() {
+                this.listaHTML.innerHTML = '';
+                let valorTotal = 0;
+
+                if (this.carrinho.length === 0) {
+                    this.listaHTML.innerHTML = '<li style="color: #aaa;">O carrinho está vazio.</li>';
+                }
+
+                this.carrinho.forEach(item => {
+                    const li = document.createElement('li');
+                    li.style.marginBottom = "8px";
+                    const subtotal = item.preco * item.quantidade;
+
+                    li.innerHTML = `
+                ${item.quantidade}x ${item.nome} - R$ ${subtotal.toFixed(2).replace('.', ',')}
+                <button class="btn-remover" onclick="mercado.removerDoCarrinho('${item.nome}')">Remover</button>
+            `;
+
+                    this.listaHTML.appendChild(li);
+                    valorTotal += subtotal;
+                });
+
+                this.totalHTML.innerText = valorTotal.toFixed(2).replace('.', ',');
+            }
+        }
+
+        const mercado = new SistemaMercado();
+
+        class ResumoPedido {
+            constructor(carrinho) {
+                this.carrinho = carrinho;
+            }
+
+            gerar() {
+                if (this.carrinho.length === 0) {
+                    alert('Carrinho vazio!');
+                    return;
+                }
+
+                const linhas = this.carrinho.map(item =>
+                    `${item.quantidade}x ${item.nome} = R$ ${(item.preco * item.quantidade).toFixed(2)}`
+                );
+
+                const total = this.carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+
+                alert(linhas.join('\n') + `\n\nTotal: R$ ${total.toFixed(2)}`);
+            }
+        }
+
+        const resumo = new ResumoPedido(mercado.carrinho);
+        resumo.gerar();
+
+        class GerenciadorDesconto {
+            constructor(carrinho) {
+                this.carrinho = carrinho;
+            }
+
+            aplicarDesconto(percentual) {
+                for (let i = 0; i < this.carrinho.length; i++) {
+                    this.carrinho[i].preco -= this.carrinho[i].preco * (percentual / 100);
+                }
+            }
+
+            exibirDescontos() {
+                for (let i = 0; i < this.carrinho.length; i++) {
+                    console.log(`${this.carrinho[i].nome} agora custa R$ ${this.carrinho[i].preco.toFixed(2)}`);
+                }
+            }
+        }
+
+        const desconto = new GerenciadorDesconto(mercado.carrinho);
+        desconto.aplicarDesconto(10);
+        desconto.exibirDescontos();
+
+        class BuscadorCEP {
+            constructor(inputSelector, buttonSelector, displaySelector) {
+                this.inputCep = document.querySelector(inputSelector);
+                this.botaoBuscar = document.querySelector(buttonSelector);
+                this.telaResultado = document.querySelector(displaySelector);
+
+                this.registrarEvento();
+            }
+
+            registrarEvento() {
+                this.botaoBuscar.addEventListener('click', () => this.buscarEndereco());
+            }
+
+            buscarEndereco() {
+                const cep = this.inputCep.value.replace(/\D/g, '');
+
+                if (cep.length !== 8) {
+                    alert("CEP inválido! Digite 8 números.");
+                    return;
+                }
+
+                this.telaResultado.innerHTML = "Carregando...";
+
+                const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+                fetch(url)
+                    .then(resposta => resposta.json())
+                    .then(dados => {
+                        if (dados.erro) {
+                            alert("CEP não encontrado!");
+                            this.limparTela();
+                        } else {
+                            this.renderizar(dados);
+                        }
+                    })
+                    .catch(erro => {
+                        console.error("Erro na rede!", erro);
+                        alert("Erro ao conectar no serviço de CEP.");
+                    });
+            }
+
+            renderizar(dados) {
+                this.telaResultado.innerHTML = `
+                    <p style="margin: 5px 0;"><strong>Endereço:</strong> ${dados.logradouro}</p>
+                    <p style="margin: 5px 0;"><strong>Bairro:</strong> ${dados.bairro}</p>
+                    <p style="margin: 5px 0;"><strong>Cidade:</strong> ${dados.localidade} - ${dados.uf}</p>
+                    <p style="color: green; font-weight: bold;">✔ Entrega disponível para esta região!</p>
+                `;
+            }
+
+            limparTela() {
+                this.telaResultado.innerHTML = "";
+            }
+        }
+
+        const appCep = new BuscadorCEP('#cep', '#buscar_cep', '#resultado');
+    </script>
+</body>
+
+</html>

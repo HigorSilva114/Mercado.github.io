@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado do Zé</title>
+    <style>
+        body {
+            background-image: linear-gradient(to right, rgb(24, 60, 219), rgb(3, 235, 235));
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #formulario {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .Login input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            width: 250px;
+        }
+
+        button {
+            color: rgb(0, 0, 0);
+            border-radius: 100px;
+            background-color: yellow;
+            width: 120px;
+            height: 35px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        a {
+            color: rgb(0, 0, 0);
+            display: block;
+            margin-top: 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        img {
+            width: 100px;
+            margin-top: 20px;
+        }
+
+        h1, h2 { color: white; }
+    </style>
+</head>
+<body>
+
+    <form id="formulario">
+        <h1>Bem-vindo ao Mercado do Zé</h1>
+        
+        <div class="Login">
+            <h2>Login</h2>
+            <input type="text" placeholder="CPF ou Email-(Operador)" id="Usuario" required>
+            <h2>Senha</h2>
+            <input type="password" placeholder="Senha ou ID-(Operador)" id="Senha" required> 
+        </div>
+
+        <button type="submit">Entrar</button>
+        <a href="Panfleto.html">Explorar</a>
+        
+        <img src="Logo.png" alt="Logo">
+    </form>
+
+    <script>
+        class Mercado {
+            constructor() {
+                this.inputUsuario = document.getElementById("Usuario");
+                this.inputSenha = document.getElementById("Senha");
+            }
+
+            EnviarLocal(cpf, Senha) {
+                if (cpf.length === 11 && Senha.length >= 6) {
+                    alert("Bem-vindo Cliente!");
+                    window.location.href = "Panfleto.html";
+                } else {
+                    alert("CPF (11 números) ou Senha (mín. 6) inválido");
+                }
+            }
+        }
+
+        class Funcionario extends Mercado {
+            constructor() {
+                super();
+            }
+
+            EnviarLocal(email, id) {
+                if (email.includes("@") && id.length >= 8) {
+                    alert("Bem-vindo Funcionário!");
+                    window.location.href = "PainelFuncionario.html";
+                } else {
+                    alert("Email ou ID (mín. 8) inválido");
+                }
+            }
+        }
+
+        const cliente = new Mercado();
+        const funcionario = new Funcionario();
+
+        document.getElementById("formulario").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const valorUsuario = document.getElementById("Usuario").value;
+            const valorSenha = document.getElementById("Senha").value;
+
+            if (valorUsuario.includes("@")) {
+                funcionario.EnviarLocal(valorUsuario, valorSenha);
+            } else {
+                cliente.EnviarLocal(valorUsuario, valorSenha);
+            }
+        });
+    </script>
+</body>
+</html>

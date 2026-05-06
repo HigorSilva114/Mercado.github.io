@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Funcionário - Mercado do Zé</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: linear-gradient(to right, #45dfd7, #24499e);
+            color: #000;
+        }
+
+        header {
+            text-align: center;
+            position: relative;
+            padding-top: 30px;
+        }
+
+        #logo {
+            position: absolute;
+            left: 200px;
+            top: 20px;
+            width: 250px;
+        }
+
+        h1 {
+            font-size: 65px;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .ofertas-titulo {
+            color: #e74c3c;
+            font-size: 45px;
+            margin: -5px 0 20px 300px;
+            font-weight: bold;
+        }
+
+        .categorias {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 50px;
+        }
+
+        .categorias a {
+            margin: 0 10px;
+            text-decoration: underline;
+            color: black;
+            cursor: pointer;
+        }
+
+        .categorias a:hover {
+            color: #ffd700;
+        }
+
+        .vitrine {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+
+        .produto-card {
+            width: 200px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .produto-card img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .produto-card h3 {
+            font-size: 15px;
+            margin: 0 0 10px 0;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preco-tag {
+            background-color: #ffd700;
+            color: black;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 25px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .preco-tag:hover {
+            transform: scale(1.1);
+        }
+
+        .preco-tag span {
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            color: #fff;
+            margin-top: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            border: 2px solid #ffd700;
+            margin-top: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="Logo.png" id="logo" alt="Logo Mercado do Zé">
+        <h1>Mercado do Zé</h1>
+        <div class="ofertas-titulo">PAINEL DO FUNCIONÁRIO</div>
+
+        <div class="categorias">
+            <a onclick="painel.filtrar('todos')">Todos</a> |
+            <a onclick="painel.filtrar('limpeza')">Limpeza</a> |
+            <a onclick="painel.filtrar('carnes')">Carnes</a> |
+            <a onclick="painel.filtrar('mercearia')">Mercearia</a>
+        </div>
+    </header>
+
+    <main class="vitrine">
+        <div class="produto-card" data-categoria="limpeza">
+            <img src="Veja.png" alt="Veja">
+            <h3>Desengordurante Veja</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Desengordurante Veja', 5.99)">5,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Trigo.png" alt="Farinha">
+            <h3>Farinha de trigo Vilma</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Farinha de trigo Vilma', 2.99)">2,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="limpeza">
+            <img src="Sanol.png" alt="Sanol">
+            <h3>Desinfetante Sanol</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Desinfetante Sanol', 7.99)">7,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="carnes">
+            <img src="Cupim.png" alt="Cupim">
+            <h3>Corte Cupim</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Corte Cupim', 39.90)">39,90 <span>KG</span></button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Sal.png" alt="Sal">
+            <h3>Sal Globo</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Sal Globo', 1.99)">1,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Feijão.png" alt="Feijão">
+            <h3>Feijão COOP</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Feijão COOP', 7.99)">7,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="limpeza">
+            <img src="Papel_higienico.png" alt="Papel">
+            <h3>Papel higiênico</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Papel higiênico', 12.99)">12,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="carnes">
+            <img src="Picanha.png" alt="Picanha">
+            <h3>Corte Picanha</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Corte Picanha', 45.99)">45,99 <span>KG</span></button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="nescau.png" alt="Nescau">
+            <h3>Chocolate em pó Nescau</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Chocolate Nescau', 4.99)">4,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="carnes">
+            <img src="Linguiça.png" alt="Linguiça">
+            <h3>Linguiça Toscana</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Linguiça Toscana', 24.99)">24,99 <span>KG</span></button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Arroz.png" alt="Arroz">
+            <h3>Arroz Caçarola</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Arroz Caçarola', 7.99)">7,99</button>
+        </div>
+
+        <div class="produto-card" data-categoria="mercearia">
+            <img src="Cerveja.png" alt="Cerveja">
+            <h3>Cerveja PAULANER</h3>
+            <button class="preco-tag" onclick="painel.editarPreco(this, 'Cerveja PAULANER', 3.99)">3,99</button>
+        </div>
+    </main>
+
+    <script>
+        class PainelAdministrativo {
+            constructor() {
+                this.produtos = document.querySelectorAll('.produto-card');
+            }
+
+            filtrar(categoria) {
+                this.produtos.forEach(card => {
+                    const catCard = card.getAttribute('data-categoria');
+                    card.style.display = (categoria === 'todos' || catCard === categoria) ? "block" : "none";
+                });
+            }
+
+            editarPreco(botao, nome, precoAtual) {
+                const novoPreco = prompt(`Alterar preço de: ${nome}\nValor atual: R$ ${precoAtual.toFixed(2).replace('.', ',')}`, precoAtual);
+                
+                if (novoPreco !== null && novoPreco !== "") {
+                    const precoNumerico = parseFloat(novoPreco.replace(',', '.'));
+
+                    if (!isNaN(precoNumerico)) {
+                        this.renderizarAlteracao(botao, nome, precoNumerico);
+                    } else {
+                        alert("Erro: Digite um valor numérico válido.");
+                    }
+                }
+            }
+
+            renderizarAlteracao(botao, nome, valor) {
+                const temKg = botao.innerHTML.toLowerCase().includes('span') || botao.innerHTML.toLowerCase().includes('kg');
+                const valorFormatado = valor.toFixed(2).replace('.', ',');
+            
+                botao.innerHTML = temKg ? `${valorFormatado} <span>KG</span>` : valorFormatado;
+            
+                botao.setAttribute('onclick', `painel.editarPreco(this, '${nome}', ${valor})`);
+            }
+        }
+
+        const painel = new PainelAdministrativo();
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <style>
+            body{
+                margin: 0;
+                padding: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background-image: linear-gradient(to right, #45dfd7, #24499e);
+                color: #000;
+            }
+            h1{
+                font-size: 65px;
+                margin: 0;
+                letter-spacing: 2px;
+            }
+            .vitrine {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 40px;
+                max-width: 1100px;
+                margin: 0 auto;
+                padding-bottom: 50px;
+            }
+            .produto-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 150px;
+            }
+        </style>
+        <title>Produtos B22</title>
+    </head>
+    <body>
+        <center>
+        <h1>Itens da B22</h1>
+        </center>
+        <div class="vitrine"></div>
+
+        <script>
+            class ItensDaB22 {
+                constructor() {
+                    this.b22();
+                }
+
+                b22() {
+                    fetch('Itensb22.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const vitrine = document.querySelector('.vitrine');
+
+                        data.forEach(item => {
+                            const card = document.createElement('div');
+                            card.className = 'produto-card';
+                            card.setAttribute('data-categoria', item.Categoria || 'b22');
+
+                            card.innerHTML = `
+                                <h3>${item.Descrição}</h3>
+                                <p style="color:white">Qtd: ${item.Quantidade}</p>
+                                <p style="color:#ffd700; font-size:13px">${item.Localização}</p>
+                            `;
+
+                            vitrine.appendChild(card);
+                        });
+                    })
+                    .catch(error => console.error('Erro ao ler JSON:', error));
+                }
+            }
+
+            new ItensDaB22();
+        </script>
+    </body>
+</html>

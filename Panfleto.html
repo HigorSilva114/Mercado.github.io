@@ -21,8 +21,8 @@
 
         #logo {
             position: absolute;
-            left: 200px;
-            top: 20px;
+            left: 20px;
+            top: -40px;
             width: 250px;
         }
 
@@ -207,7 +207,6 @@
             color: #333;
             line-height: 1.5;
         }
-
     </style>
 </head>
 
@@ -250,8 +249,7 @@
         <div class="produto-card" data-categoria="carnes">
             <img src="Cupim.png" alt="Cupim">
             <h3>Corte Cupim</h3>
-            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Corte Cupim', 39.90 , 'select-cupim')">39,90
-                <span>KG</span></button>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Corte Cupim', 39.90 , 'select-cupim')">39,90<span>KG</span></button>
             <label for="Kilos">Escolha Uma Quantidade Kg/Gramas:</label>
             <select name="Kilos" id="select-cupim">
                 <option value="0.5">0,500G Mínimo</option>
@@ -288,9 +286,7 @@
         <div class="produto-card" data-categoria="carnes">
             <img src="Picanha.png" alt="Picanha">
             <h3>Corte Picanha</h3>
-            <button class="preco-tag"
-                onclick="mercado.adicionarAoCarrinho('Corte Picanha', 45.99 , 'select-picanha')">45,99
-                <span>KG</span></button>
+            <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Corte Picanha', 45.99 , 'select-picanha')">45,99<span>KG</span></button>
             <label for="Kilos">Escolha Uma Quantidade Kg/Gramas:</label>
             <select name="Kilos" id="select-picanha">
                 <option value="0.5">0,500G Mínimo</option>
@@ -344,6 +340,7 @@
             <button class="preco-tag" onclick="mercado.adicionarAoCarrinho('Cerveja PAULANER', 3.99)">3,99</button>
         </div>
     </main>
+
     <section id="area-entrega">
         <h3>Consulte a Entrega</h3>
         <div class="busca-container">
@@ -359,192 +356,289 @@
             <li style="color: #aaa;">O carrinho está vazio. Clique em um preço para comprar!</li>
         </ul>
         <h3>Total: R$ <span id="total-carrinho">0,00</span></h3>
+        
+        <button id="btn-finalizar" class="preco-tag" style="margin-top: 15px;">Finalizar Compra</button>
     </section>
 
     <script>
-        class SistemaMercado {
-            constructor() {
-                this.carrinho = [];
-                this.listaHTML = document.getElementById('lista-carrinho');
-                this.totalHTML = document.getElementById('total-carrinho');
+
+    // 1.4.1. Orientação a Objetos (Definição)
+    // 1.4.2. Classes
+    class ItemCarrinho {
+        // 1.4.3. Atributos
+        constructor(nome, preco, quantidade = 1) {
+            this.nome = nome;
+            this.preco = preco;
+            this.quantidade = quantidade;
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        calcularSubtotal() {
+            // 1.1.1. Operadores Aritméticos
+            return this.preco * this.quantidade;
+        }
+    }
+
+    // 1.4.2. Classes
+    class SistemaMercado {
+        // 1.4.3. Atributos
+        constructor() {
+            this.carrinho = [];
+            // 1.3.1. DOM (Seleção de elementos)
+            this.listaHTML = document.getElementById('lista-carrinho');
+            this.totalHTML = document.getElementById('total-carrinho');
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        filtrarCategoria(categoriaSelecionada) {
+            // 1.3.1. DOM (Seleção de elementos)
+            const produtos = document.querySelectorAll('.produto-card');
+            produtos.forEach(produto => {
+                const categoriaDoProduto = produto.getAttribute('data-categoria');
+                // 1.1.2. Operadores Relacionais
+                // 1.1.3. Operadores Lógicos
+                // 1.3.2. DOM (Manipulação de elementos)
+                produto.style.display = (categoriaSelecionada === 'todos' || categoriaSelecionada === categoriaDoProduto) ? 'flex' : 'none';
+            });
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        adicionarAoCarrinho(nome, precoBase, idSelect = null) {
+            let quantidadeOuPeso = 1;
+            let nomeExibicao = nome;
+
+            if (idSelect) {
+                // 1.3.1. DOM (Seleção de elementos)
+                const select = document.getElementById(idSelect);
+                // 1.2.2. Funções Matemáticas
+                quantidadeOuPeso = parseFloat(select.value);
+                // 1.2.3. Funções de String
+                nomeExibicao = `${nome} (${quantidadeOuPeso}kg)`;
             }
 
-            filtrarCategoria(categoriaSelecionada) {
-                const produtos = document.querySelectorAll('.produto-card');
-                produtos.forEach(produto => {
-                    const categoriaDoProduto = produto.getAttribute('data-categoria');
-                    produto.style.display = (categoriaSelecionada === 'todos' || categoriaSelecionada === categoriaDoProduto) ? 'flex' : 'none';
-                });
+            // 1.1.2. Operadores Relacionais
+            const itemExistente = this.carrinho.find(item => item.nome === nomeExibicao);
+
+            // 1.1.3. Operadores Lógicos
+            if (itemExistente && !idSelect) {
+                // 1.1.1. Operadores Aritméticos
+                itemExistente.quantidade += 1;
+            } else {
+                // 1.1.1. Operadores Aritméticos
+                this.carrinho.push(new ItemCarrinho(nomeExibicao, precoBase * quantidadeOuPeso));
             }
 
-            adicionarAoCarrinho(nome, precoBase, idSelect = null) {
-                let quantidadeOuPeso = 1;
-                let nomeExibicao = nome;
+            this.atualizarVisual();
+        }
 
-                if (idSelect) {
-                    const select = document.getElementById(idSelect);
-                    quantidadeOuPeso = parseFloat(select.value);
-                    nomeExibicao = `${nome} (${quantidadeOuPeso}kg)`;
-                }
-
-                const itemExistente = this.carrinho.find(item => item.nome === nomeExibicao);
-
-                if (itemExistente && !idSelect) {
-                    itemExistente.quantidade += 1;
+        // 1.4.4. Funções Internas (Métodos)
+        removerDoCarrinho(nome) {
+            // 1.1.2. Operadores Relacionais
+            const index = this.carrinho.findIndex(item => item.nome === nome);
+            // 1.1.2. Operadores Relacionais
+            if (index !== -1) {
+                if (this.carrinho[index].quantidade > 1) {
+                    // 1.1.1. Operadores Aritméticos
+                    this.carrinho[index].quantidade -= 1;
                 } else {
-                    this.carrinho.push({
-                        nome: nomeExibicao,
-                        preco: precoBase * quantidadeOuPeso,
-                        quantidade: 1
-                    });
+                    this.carrinho.splice(index, 1);
                 }
-
-                this.atualizarVisual();
             }
-
-            removerDoCarrinho(nome) {
-                const index = this.carrinho.findIndex(item => item.nome === nome);
-                if (index !== -1) {
-                    if (this.carrinho[index].quantidade > 1) {
-                        this.carrinho[index].quantidade -= 1;
-                    } else {
-                        this.carrinho.splice(index, 1);
-                    }
-                }
-                this.atualizarVisual();
-            }
-
-            atualizarVisual() {
-                this.listaHTML.innerHTML = '';
-                let valorTotal = 0;
-
-                if (this.carrinho.length === 0) {
-                    this.listaHTML.innerHTML = '<li style="color: #aaa;">O carrinho está vazio.</li>';
-                }
-
-                this.carrinho.forEach(item => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = "8px";
-                    const subtotal = item.preco * item.quantidade;
-
-                    li.innerHTML = `
-                ${item.quantidade}x ${item.nome} - R$ ${subtotal.toFixed(2).replace('.', ',')}
-                <button class="btn-remover" onclick="mercado.removerDoCarrinho('${item.nome}')">Remover</button>
-            `;
-
-                    this.listaHTML.appendChild(li);
-                    valorTotal += subtotal;
-                });
-
-                this.totalHTML.innerText = valorTotal.toFixed(2).replace('.', ',');
-            }
+            this.atualizarVisual();
         }
 
-        const mercado = new SistemaMercado();
+        // 1.4.4. Funções Internas (Métodos)
+        atualizarVisual() {
+            // 1.3.2. DOM (Manipulação de elementos)
+            this.listaHTML.innerHTML = '';
+            let valorTotal = 0;
 
-        class ResumoPedido {
-            constructor(carrinho) {
-                this.carrinho = carrinho;
+            // 1.1.2. Operadores Relacionais
+            if (this.carrinho.length === 0) {
+                // 1.3.2. DOM (Manipulação de elementos)
+                this.listaHTML.innerHTML = '<li style="color: #aaa;">O carrinho está vazio.</li>';
             }
 
-            gerar() {
-                if (this.carrinho.length === 0) {
-                    alert('Carrinho vazio!');
-                    return;
-                }
+            this.carrinho.forEach(item => {
+                // 1.3.2. DOM (Manipulação de elementos)
+                const li = document.createElement('li');
+                // 1.3.2. DOM (Manipulação de elementos)
+                li.style.marginBottom = "8px";
+                const subtotal = item.calcularSubtotal();
 
-                const linhas = this.carrinho.map(item =>
-                    `${item.quantidade}x ${item.nome} = R$ ${(item.preco * item.quantidade).toFixed(2)}`
-                );
-
-                const total = this.carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
-
-                alert(linhas.join('\n') + `\n\nTotal: R$ ${total.toFixed(2)}`);
-            }
-        }
-
-        const resumo = new ResumoPedido(mercado.carrinho);
-        resumo.gerar();
-
-        class GerenciadorDesconto {
-            constructor(carrinho) {
-                this.carrinho = carrinho;
-            }
-
-            aplicarDesconto(percentual) {
-                for (let i = 0; i < this.carrinho.length; i++) {
-                    this.carrinho[i].preco -= this.carrinho[i].preco * (percentual / 100);
-                }
-            }
-
-            exibirDescontos() {
-                for (let i = 0; i < this.carrinho.length; i++) {
-                    console.log(`${this.carrinho[i].nome} agora custa R$ ${this.carrinho[i].preco.toFixed(2)}`);
-                }
-            }
-        }
-
-        const desconto = new GerenciadorDesconto(mercado.carrinho);
-        desconto.aplicarDesconto(10);
-        desconto.exibirDescontos();
-
-        class BuscadorCEP {
-            constructor(inputSelector, buttonSelector, displaySelector) {
-                this.inputCep = document.querySelector(inputSelector);
-                this.botaoBuscar = document.querySelector(buttonSelector);
-                this.telaResultado = document.querySelector(displaySelector);
-
-                this.registrarEvento();
-            }
-
-            registrarEvento() {
-                this.botaoBuscar.addEventListener('click', () => this.buscarEndereco());
-            }
-
-            buscarEndereco() {
-                const cep = this.inputCep.value.replace(/\D/g, '');
-
-                if (cep.length !== 8) {
-                    alert("CEP inválido! Digite 8 números.");
-                    return;
-                }
-
-                this.telaResultado.innerHTML = "Carregando...";
-
-                const url = `https://viacep.com.br/ws/${cep}/json/`;
-
-                fetch(url)
-                    .then(resposta => resposta.json())
-                    .then(dados => {
-                        if (dados.erro) {
-                            alert("CEP não encontrado!");
-                            this.limparTela();
-                        } else {
-                            this.renderizar(dados);
-                        }
-                    })
-                    .catch(erro => {
-                        console.error("Erro na rede!", erro);
-                        alert("Erro ao conectar no serviço de CEP.");
-                    });
-            }
-
-            renderizar(dados) {
-                this.telaResultado.innerHTML = `
-                    <p style="margin: 5px 0;"><strong>Endereço:</strong> ${dados.logradouro}</p>
-                    <p style="margin: 5px 0;"><strong>Bairro:</strong> ${dados.bairro}</p>
-                    <p style="margin: 5px 0;"><strong>Cidade:</strong> ${dados.localidade} - ${dados.uf}</p>
-                    <p style="color: green; font-weight: bold;">✔ Entrega disponível para esta região!</p>
+                // 1.2.2. Funções Matemáticas
+                // 1.2.3. Funções de String
+                li.innerHTML = `
+                    ${item.quantidade}x ${item.nome} - R$ ${subtotal.toFixed(2).replace('.', ',')}
+                    <button class="btn-remover" onclick="mercado.removerDoCarrinho('${item.nome}')">Remover</button>
                 `;
+
+                // 1.3.2. DOM (Manipulação de elementos)
+                this.listaHTML.appendChild(li);
+                // 1.1.1. Operadores Aritméticos
+                valorTotal += subtotal;
+            });
+
+            // 1.3.2. DOM (Manipulação de elementos)
+            // 1.2.2. Funções Matemáticas e 1.2.3. Funções de String
+            this.totalHTML.innerText = valorTotal.toFixed(2).replace('.', ',');
+        }
+    }
+
+    // Instanciação
+    const mercado = new SistemaMercado();
+
+    // 1.4.2. Classes
+    class ResumoPedido {
+        // 1.4.3. Atributos
+        constructor(carrinho) {
+            this.carrinho = carrinho; 
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        gerar() {
+            // 1.1.2. Operadores Relacionais
+            if (this.carrinho.length === 0) {
+                alert('Carrinho vazio!');
+                return;
             }
 
-            limparTela() {
-                this.telaResultado.innerHTML = "";
+            // 1.2.2. Funções Matemáticas e 1.2.3. Funções de String
+            const linhas = this.carrinho.map(item =>
+                `${item.quantidade} x ${item.nome} = R$ ${item.calcularSubtotal().toFixed(2).replace('.', ',')}`
+            );
+
+            const total = this.carrinho.reduce((acc, item) => acc + item.calcularSubtotal(), 0);
+
+            // 1.2.3. Funções de String
+            alert(linhas.join('\n') + `\n\nTotal com Desconto: R$ ${total.toFixed(2).replace('.', ',')}`);
+        }
+    }
+
+    // 1.4.2. Classes
+    class GerenciadorDesconto {
+        // 1.4.3. Atributos
+        constructor(carrinho) {
+            this.carrinho = carrinho;
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        aplicarDesconto(percentual) {
+            // 1.1.2. Operadores Relacionais
+            for (let i = 0; i < this.carrinho.length; i++) {
+                // 1.1.1. Operadores Aritméticos
+                this.carrinho[i].preco -= this.carrinho[i].preco * (percentual / 100);
             }
         }
 
-        const appCep = new BuscadorCEP('#cep', '#buscar_cep', '#resultado');
-    </script>
+        // 1.4.4. Funções Internas (Métodos)
+        exibirDescontos() {
+            // 1.1.2. Operadores Relacionais
+            for (let i = 0; i < this.carrinho.length; i++) {
+                // 1.2.2. Funções Matemáticas e 1.2.3. Funções de String
+                console.log(`${this.carrinho[i].nome} agora custa R$ ${this.carrinho[i].preco.toFixed(2)}`);
+            }
+        }
+    }
+
+    // 1.4.2. Classes
+    class BuscadorCEP {
+        // 1.4.3. Atributos
+        constructor(inputSelector, buttonSelector, displaySelector) {
+            // 1.3.1. DOM (Seleção de elementos)
+            this.inputCep = document.querySelector(inputSelector);
+            this.botaoBuscar = document.querySelector(buttonSelector);
+            this.telaResultado = document.querySelector(displaySelector);
+
+            this.registrarEvento();
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        registrarEvento() {
+            // 1.3.2. DOM (Manipulação de elementos)
+            this.botaoBuscar.addEventListener('click', () => this.buscarEndereco());
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        buscarEndereco() {
+            // 1.2.3. Funções de String
+            const cep = this.inputCep.value.replace(/\D/g, '');
+
+            // 1.1.2. Operadores Relacionais
+            if (cep.length !== 8) {
+                alert("CEP inválido! Digite 8 números.");
+                return;
+            }
+
+            // 1.3.2. DOM (Manipulação de elementos)
+            this.telaResultado.innerHTML = "Carregando...";
+
+            // 1.2.3. Funções de String
+            const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+            
+            // 1.5. API: Consumo de um endpoint web externo através da API assíncrona fetch()
+            fetch(url)
+                .then(resposta => resposta.json()) 
+                .then(dados => {
+                    // 1.1.3. Operadores Lógicos
+                    if (dados.erro) {
+                        alert("CEP não encontrado!");
+                        this.limparTela();
+                    } else {
+                        this.renderizar(dados);
+                    }
+                })
+                .catch(erro => {
+                    console.error("Erro na rede!", erro);
+                    alert("Erro ao conectar no serviço de CEP.");
+                });
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        renderizar(dados) {
+            // 1.3.2. DOM (Manipulação de elementos)
+            // 1.2.3. Funções de String
+            this.telaResultado.innerHTML = `
+                <p style="margin: 5px 0;"><strong>Endereço:</strong> ${dados.logradouro}</p>
+                <p style="margin: 5px 0;"><strong>Bairro:</strong> ${dados.bairro}</p>
+                <p style="margin: 5px 0;"><strong>Cidade:</strong> ${dados.localidade} - ${dados.uf}</p>
+                <p style="color: green; font-weight: bold;">✔ Entrega disponível para esta região!</p>
+            `;
+        }
+
+        // 1.4.4. Funções Internas (Métodos)
+        limparTela() {
+            // 1.3.2. DOM (Manipulação de elementos)
+            this.telaResultado.innerHTML = "";
+        }
+    }
+
+    const appCep = new BuscadorCEP('#cep', '#buscar_cep', '#resultado');
+    
+    // 1.3.1. DOM (Seleção de elementos)
+    const btnFinalizar = document.getElementById('btn-finalizar');
+
+    if (btnFinalizar) {
+        // 1.3.2. DOM (Manipulação de elementos)
+        btnFinalizar.addEventListener('click', () => {
+
+            // 1.1.2. Operadores Relacionais
+            if (mercado.carrinho.length === 0) {
+                alert("Seu carrinho está vazio! Adicione produtos antes de finalizar.");
+                return;
+            }
+
+            const desconto = new GerenciadorDesconto(mercado.carrinho);
+            desconto.aplicarDesconto(10);
+
+            mercado.atualizarVisual(); 
+
+            const resumo = new ResumoPedido(mercado.carrinho);
+            resumo.gerar();
+        });
+    }
+</script>
 </body>
 
 </html>
